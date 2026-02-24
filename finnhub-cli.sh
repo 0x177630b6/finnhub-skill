@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ###############################################################################
-# finn — CLI tool for the Finnhub Stock API
+# finnhub-cli.sh — CLI tool for the Finnhub Stock API
 ###############################################################################
 
 # === Constants ===============================================================
@@ -15,7 +15,7 @@ VERSION="0.1.0"
 
 # Print message to stderr and exit 1.
 _err() {
-    printf "finn: %s\n" "$*" >&2
+    printf "finnhub-cli.sh: %s\n" "$*" >&2
     exit 1
 }
 
@@ -117,7 +117,7 @@ _api() {
 
     # Check for 2xx status
     if [[ ! "$http_code" =~ ^2[0-9][0-9]$ ]]; then
-        printf "finn: HTTP %s from %s\n%s\n" "$http_code" "${BASE_URL}${endpoint}" "$body" >&2
+        printf "finnhub-cli.sh: HTTP %s from %s\n%s\n" "$http_code" "${BASE_URL}${endpoint}" "$body" >&2
         exit 1
     fi
 
@@ -128,10 +128,10 @@ _api() {
 
 _usage() {
     cat <<'HELPTEXT'
-finn -- CLI tool for the Finnhub Stock API
+finnhub-cli.sh -- CLI tool for the Finnhub Stock API
 
 USAGE
-    finn <command> [options]
+    finnhub-cli.sh <command> [options]
 
 GLOBAL OPTIONS
     --token <key>    API token (overrides FINNHUB_TOKEN env var)
@@ -196,11 +196,11 @@ COMMANDS
     country               List available country metadata
 
 EXAMPLES
-    finn quote AAPL
-    finn candle MSFT --from 2024-01-01 --to 2024-06-01
-    finn profile TSLA
-    finn search "apple"
-    finn --token sk-xxxxx quote GOOG
+    finnhub-cli.sh quote AAPL
+    finnhub-cli.sh candle MSFT --from 2024-01-01 --to 2024-06-01
+    finnhub-cli.sh profile TSLA
+    finnhub-cli.sh search "apple"
+    finnhub-cli.sh --token sk-xxxxx quote GOOG
 
 ENVIRONMENT
     FINNHUB_TOKEN    API token (can also use --token flag)
@@ -209,7 +209,7 @@ HELPTEXT
 }
 
 _version() {
-    printf "finn %s\n" "$VERSION"
+    printf "finnhub-cli.sh %s\n" "$VERSION"
 }
 
 # === Global Argument Pre-Processing ==========================================
@@ -271,7 +271,7 @@ case "$COMMAND" in
     quote)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn quote <symbol>
+Usage: finnhub-cli.sh quote <symbol>
 
 Get real-time quote data for a stock symbol.
 
@@ -279,19 +279,19 @@ ARGUMENTS
     <symbol>    Stock ticker symbol (e.g. AAPL, MSFT, GOOG)
 
 EXAMPLES
-    finn quote AAPL
-    finn quote MSFT
+    finnhub-cli.sh quote AAPL
+    finnhub-cli.sh quote MSFT
 EOF
             exit 0
         fi
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn quote <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh quote <symbol>"
         _api "/quote" "symbol=${symbol}"
         ;;
     candle)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn candle <symbol> [options]
+Usage: finnhub-cli.sh candle <symbol> [options]
 
 Get candlestick (OHLCV) data for a stock symbol.
 
@@ -304,8 +304,8 @@ OPTIONS
     --to DATE         End date in YYYY-MM-DD format (default: today)
 
 EXAMPLES
-    finn candle AAPL
-    finn candle MSFT --resolution 60 --from 2024-01-01 --to 2024-06-01
+    finnhub-cli.sh candle AAPL
+    finnhub-cli.sh candle MSFT --resolution 60 --from 2024-01-01 --to 2024-06-01
 EOF
             exit 0
         fi
@@ -320,7 +320,7 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn candle <symbol> [--resolution D] [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh candle <symbol> [--resolution D] [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
         [[ -z "$from" ]] && from=$(_default_from 365)
         [[ -z "$to" ]] && to=$(_default_to)
         from_ts=""; to_ts=""
@@ -331,7 +331,7 @@ EOF
     search)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn search <query>
+Usage: finnhub-cli.sh search <query>
 
 Search for stock symbols by name or keyword.
 
@@ -339,19 +339,19 @@ ARGUMENTS
     <query>    Search query string (e.g. "apple", "tesla")
 
 EXAMPLES
-    finn search apple
-    finn search "microsoft corp"
+    finnhub-cli.sh search apple
+    finnhub-cli.sh search "microsoft corp"
 EOF
             exit 0
         fi
         query="${COMMAND_ARGS[0]:-""}"
-        _require "query" "$query" "usage: finn search <query>"
+        _require "query" "$query" "usage: finnhub-cli.sh search <query>"
         _api "/search" "q=${query}"
         ;;
     symbols)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn symbols <exchange>
+Usage: finnhub-cli.sh symbols <exchange>
 
 List supported stock symbols for an exchange.
 
@@ -359,19 +359,19 @@ ARGUMENTS
     <exchange>    Exchange code (e.g. US, L, T, HK)
 
 EXAMPLES
-    finn symbols US
-    finn symbols L
+    finnhub-cli.sh symbols US
+    finnhub-cli.sh symbols L
 EOF
             exit 0
         fi
         exchange="${COMMAND_ARGS[0]:-""}"
-        _require "exchange" "$exchange" "usage: finn symbols <exchange>"
+        _require "exchange" "$exchange" "usage: finnhub-cli.sh symbols <exchange>"
         _api "/stock/symbol" "exchange=${exchange}"
         ;;
     market-status)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn market-status <exchange>
+Usage: finnhub-cli.sh market-status <exchange>
 
 Get current market trading status for an exchange.
 
@@ -379,19 +379,19 @@ ARGUMENTS
     <exchange>    Exchange code (e.g. US, L, T, HK)
 
 EXAMPLES
-    finn market-status US
-    finn market-status L
+    finnhub-cli.sh market-status US
+    finnhub-cli.sh market-status L
 EOF
             exit 0
         fi
         exchange="${COMMAND_ARGS[0]:-""}"
-        _require "exchange" "$exchange" "usage: finn market-status <exchange>"
+        _require "exchange" "$exchange" "usage: finnhub-cli.sh market-status <exchange>"
         _api "/stock/market-status" "exchange=${exchange}"
         ;;
     market-news)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn market-news [options]
+Usage: finnhub-cli.sh market-news [options]
 
 Get latest general market news.
 
@@ -399,8 +399,8 @@ OPTIONS
     --category CAT    News category: general, forex, crypto, merger (default: general)
 
 EXAMPLES
-    finn market-news
-    finn market-news --category crypto
+    finnhub-cli.sh market-news
+    finnhub-cli.sh market-news --category crypto
 EOF
             exit 0
         fi
@@ -417,7 +417,7 @@ EOF
     company-news)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn company-news <symbol> [options]
+Usage: finnhub-cli.sh company-news <symbol> [options]
 
 Get news articles for a specific company.
 
@@ -429,8 +429,8 @@ OPTIONS
     --to DATE      End date in YYYY-MM-DD format (default: today)
 
 EXAMPLES
-    finn company-news AAPL
-    finn company-news TSLA --from 2024-01-01 --to 2024-03-01
+    finnhub-cli.sh company-news AAPL
+    finnhub-cli.sh company-news TSLA --from 2024-01-01 --to 2024-03-01
 EOF
             exit 0
         fi
@@ -444,7 +444,7 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn company-news <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh company-news <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
         [[ -z "$from" ]] && from=$(_default_from 30)
         [[ -z "$to" ]] && to=$(_default_to)
         _api "/company-news" "symbol=${symbol}" "from=${from}" "to=${to}"
@@ -452,7 +452,7 @@ EOF
     forex-rates)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn forex-rates [options]
+Usage: finnhub-cli.sh forex-rates [options]
 
 Get real-time forex exchange rates.
 
@@ -460,8 +460,8 @@ OPTIONS
     --base CUR    Base currency code (default: USD)
 
 EXAMPLES
-    finn forex-rates
-    finn forex-rates --base EUR
+    finnhub-cli.sh forex-rates
+    finnhub-cli.sh forex-rates --base EUR
 EOF
             exit 0
         fi
@@ -478,7 +478,7 @@ EOF
     forex-candle)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn forex-candle <symbol> [options]
+Usage: finnhub-cli.sh forex-candle <symbol> [options]
 
 Get forex candlestick (OHLCV) data.
 
@@ -491,8 +491,8 @@ OPTIONS
     --to DATE         End date in YYYY-MM-DD format (default: today)
 
 EXAMPLES
-    finn forex-candle OANDA:EUR_USD
-    finn forex-candle OANDA:GBP_USD --resolution 60 --from 2024-01-01
+    finnhub-cli.sh forex-candle OANDA:EUR_USD
+    finnhub-cli.sh forex-candle OANDA:GBP_USD --resolution 60 --from 2024-01-01
 EOF
             exit 0
         fi
@@ -507,7 +507,7 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn forex-candle <symbol> [--resolution D] [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh forex-candle <symbol> [--resolution D] [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
         [[ -z "$from" ]] && from=$(_default_from 365)
         [[ -z "$to" ]] && to=$(_default_to)
         from_ts=""; to_ts=""
@@ -518,7 +518,7 @@ EOF
     crypto-candle)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn crypto-candle <symbol> [options]
+Usage: finnhub-cli.sh crypto-candle <symbol> [options]
 
 Get crypto candlestick (OHLCV) data.
 
@@ -531,8 +531,8 @@ OPTIONS
     --to DATE         End date in YYYY-MM-DD format (default: today)
 
 EXAMPLES
-    finn crypto-candle BINANCE:BTCUSDT
-    finn crypto-candle BINANCE:ETHUSDT --resolution 60 --from 2024-01-01
+    finnhub-cli.sh crypto-candle BINANCE:BTCUSDT
+    finnhub-cli.sh crypto-candle BINANCE:ETHUSDT --resolution 60 --from 2024-01-01
 EOF
             exit 0
         fi
@@ -547,7 +547,7 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn crypto-candle <symbol> [--resolution D] [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh crypto-candle <symbol> [--resolution D] [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
         [[ -z "$from" ]] && from=$(_default_from 365)
         [[ -z "$to" ]] && to=$(_default_to)
         from_ts=""; to_ts=""
@@ -560,7 +560,7 @@ EOF
     profile)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn profile <symbol>
+Usage: finnhub-cli.sh profile <symbol>
 
 Get company profile and overview.
 
@@ -568,19 +568,19 @@ Arguments:
     symbol    Stock ticker symbol (e.g., AAPL, MSFT)
 
 Examples:
-    finn profile AAPL
-    finn profile TSLA
+    finnhub-cli.sh profile AAPL
+    finnhub-cli.sh profile TSLA
 EOF
             exit 0
         fi
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn profile <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh profile <symbol>"
         _api "/stock/profile2" "symbol=${symbol}"
         ;;
     peers)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn peers <symbol>
+Usage: finnhub-cli.sh peers <symbol>
 
 Get company peers (similar companies).
 
@@ -588,19 +588,19 @@ Arguments:
     symbol    Stock ticker symbol (e.g., AAPL, MSFT)
 
 Examples:
-    finn peers AAPL
-    finn peers MSFT
+    finnhub-cli.sh peers AAPL
+    finnhub-cli.sh peers MSFT
 EOF
             exit 0
         fi
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn peers <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh peers <symbol>"
         _api "/stock/peers" "symbol=${symbol}"
         ;;
     metrics)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn metrics <symbol> [options]
+Usage: finnhub-cli.sh metrics <symbol> [options]
 
 Get basic financial metrics for a company.
 
@@ -611,8 +611,8 @@ Options:
     --metric METRIC    Metric type (default: all)
 
 Examples:
-    finn metrics AAPL
-    finn metrics MSFT --metric all
+    finnhub-cli.sh metrics AAPL
+    finnhub-cli.sh metrics MSFT --metric all
 EOF
             exit 0
         fi
@@ -625,13 +625,13 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn metrics <symbol> [--metric all]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh metrics <symbol> [--metric all]"
         _api "/stock/metric" "symbol=${symbol}" "metric=${metric}"
         ;;
     financials)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn financials <symbol> [options]
+Usage: finnhub-cli.sh financials <symbol> [options]
 
 Get standardized financial statements.
 
@@ -643,8 +643,8 @@ Options:
     --freq FREQ         Frequency: annual, quarterly (default: annual)
 
 Examples:
-    finn financials AAPL
-    finn financials MSFT --statement bs --freq quarterly
+    finnhub-cli.sh financials AAPL
+    finnhub-cli.sh financials MSFT --statement bs --freq quarterly
 EOF
             exit 0
         fi
@@ -658,13 +658,13 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn financials <symbol> [--statement bs|ic|cf] [--freq annual|quarterly]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh financials <symbol> [--statement bs|ic|cf] [--freq annual|quarterly]"
         _api "/stock/financials" "symbol=${symbol}" "statement=${statement}" "freq=${freq}"
         ;;
     financials-reported)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn financials-reported <symbol> [options]
+Usage: finnhub-cli.sh financials-reported <symbol> [options]
 
 Get as-reported financial statements.
 
@@ -675,8 +675,8 @@ Options:
     --freq FREQ    Frequency: annual, quarterly (default: annual)
 
 Examples:
-    finn financials-reported AAPL
-    finn financials-reported MSFT --freq quarterly
+    finnhub-cli.sh financials-reported AAPL
+    finnhub-cli.sh financials-reported MSFT --freq quarterly
 EOF
             exit 0
         fi
@@ -689,13 +689,13 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn financials-reported <symbol> [--freq annual|quarterly]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh financials-reported <symbol> [--freq annual|quarterly]"
         _api "/stock/financials-reported" "symbol=${symbol}" "freq=${freq}"
         ;;
     revenue-breakdown)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn revenue-breakdown <symbol>
+Usage: finnhub-cli.sh revenue-breakdown <symbol>
 
 Get revenue breakdown by segment/geography.
 
@@ -703,19 +703,19 @@ Arguments:
     symbol    Stock ticker symbol (e.g., AAPL, MSFT)
 
 Examples:
-    finn revenue-breakdown AAPL
-    finn revenue-breakdown MSFT
+    finnhub-cli.sh revenue-breakdown AAPL
+    finnhub-cli.sh revenue-breakdown MSFT
 EOF
             exit 0
         fi
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn revenue-breakdown <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh revenue-breakdown <symbol>"
         _api "/stock/revenue-breakdown" "symbol=${symbol}"
         ;;
     executives)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn executives <symbol>
+Usage: finnhub-cli.sh executives <symbol>
 
 Get list of company executives.
 
@@ -723,19 +723,19 @@ Arguments:
     symbol    Stock ticker symbol (e.g., AAPL, MSFT)
 
 Examples:
-    finn executives AAPL
-    finn executives MSFT
+    finnhub-cli.sh executives AAPL
+    finnhub-cli.sh executives MSFT
 EOF
             exit 0
         fi
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn executives <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh executives <symbol>"
         _api "/stock/executive" "symbol=${symbol}"
         ;;
     insider-transactions)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn insider-transactions <symbol> [options]
+Usage: finnhub-cli.sh insider-transactions <symbol> [options]
 
 Get insider transactions for a company.
 
@@ -747,8 +747,8 @@ Options:
     --to DATE      End date in YYYY-MM-DD format (default: today)
 
 Examples:
-    finn insider-transactions AAPL
-    finn insider-transactions MSFT --from 2024-01-01 --to 2024-06-01
+    finnhub-cli.sh insider-transactions AAPL
+    finnhub-cli.sh insider-transactions MSFT --from 2024-01-01 --to 2024-06-01
 EOF
             exit 0
         fi
@@ -762,7 +762,7 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn insider-transactions <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh insider-transactions <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
         [[ -z "$from" ]] && from=$(_default_from 90)
         [[ -z "$to" ]] && to=$(_default_to)
         _api "/stock/insider-transactions" "symbol=${symbol}" "from=${from}" "to=${to}"
@@ -770,7 +770,7 @@ EOF
     insider-sentiment)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn insider-sentiment <symbol> [options]
+Usage: finnhub-cli.sh insider-sentiment <symbol> [options]
 
 Get insider sentiment data for a company.
 
@@ -782,8 +782,8 @@ Options:
     --to DATE      End date in YYYY-MM-DD format (default: today)
 
 Examples:
-    finn insider-sentiment AAPL
-    finn insider-sentiment MSFT --from 2024-01-01 --to 2024-06-01
+    finnhub-cli.sh insider-sentiment AAPL
+    finnhub-cli.sh insider-sentiment MSFT --from 2024-01-01 --to 2024-06-01
 EOF
             exit 0
         fi
@@ -797,7 +797,7 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn insider-sentiment <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh insider-sentiment <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
         [[ -z "$from" ]] && from=$(_default_from 90)
         [[ -z "$to" ]] && to=$(_default_to)
         _api "/stock/insider-sentiment" "symbol=${symbol}" "from=${from}" "to=${to}"
@@ -805,7 +805,7 @@ EOF
     ownership)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn ownership <symbol>
+Usage: finnhub-cli.sh ownership <symbol>
 
 Get institutional ownership data for a company.
 
@@ -813,13 +813,13 @@ Arguments:
     symbol    Stock ticker symbol (e.g., AAPL, MSFT)
 
 Examples:
-    finn ownership AAPL
-    finn ownership MSFT
+    finnhub-cli.sh ownership AAPL
+    finnhub-cli.sh ownership MSFT
 EOF
             exit 0
         fi
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn ownership <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh ownership <symbol>"
         _api "/stock/ownership" "symbol=${symbol}"
         ;;
 
@@ -827,7 +827,7 @@ EOF
     recommendation)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn recommendation <symbol>
+Usage: finnhub-cli.sh recommendation <symbol>
 
 Get analyst recommendation trends (buy/hold/sell).
 
@@ -835,19 +835,19 @@ Arguments:
     symbol    Stock ticker symbol (e.g., AAPL)
 
 Examples:
-    finn recommendation AAPL
-    finn recommendation MSFT
+    finnhub-cli.sh recommendation AAPL
+    finnhub-cli.sh recommendation MSFT
 EOF
             exit 0
         fi
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn recommendation <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh recommendation <symbol>"
         _api "/stock/recommendation" "symbol=${symbol}"
         ;;
     price-target)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn price-target <symbol>
+Usage: finnhub-cli.sh price-target <symbol>
 
 Get analyst price target consensus.
 
@@ -855,19 +855,19 @@ Arguments:
     symbol    Stock ticker symbol (e.g., AAPL)
 
 Examples:
-    finn price-target AAPL
-    finn price-target TSLA
+    finnhub-cli.sh price-target AAPL
+    finnhub-cli.sh price-target TSLA
 EOF
             exit 0
         fi
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn price-target <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh price-target <symbol>"
         _api "/stock/price-target" "symbol=${symbol}"
         ;;
     eps-estimate)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn eps-estimate <symbol> [options]
+Usage: finnhub-cli.sh eps-estimate <symbol> [options]
 
 Get EPS (earnings per share) estimates.
 
@@ -878,8 +878,8 @@ Options:
     --freq F    Frequency: annual or quarterly (default: quarterly)
 
 Examples:
-    finn eps-estimate AAPL
-    finn eps-estimate MSFT --freq annual
+    finnhub-cli.sh eps-estimate AAPL
+    finnhub-cli.sh eps-estimate MSFT --freq annual
 EOF
             exit 0
         fi
@@ -892,13 +892,13 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn eps-estimate <symbol> [--freq quarterly|annual]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh eps-estimate <symbol> [--freq quarterly|annual]"
         _api "/stock/eps-estimate" "symbol=${symbol}" "freq=${freq}"
         ;;
     revenue-estimate)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn revenue-estimate <symbol> [options]
+Usage: finnhub-cli.sh revenue-estimate <symbol> [options]
 
 Get revenue estimates.
 
@@ -909,8 +909,8 @@ Options:
     --freq F    Frequency: annual or quarterly (default: quarterly)
 
 Examples:
-    finn revenue-estimate AAPL
-    finn revenue-estimate MSFT --freq annual
+    finnhub-cli.sh revenue-estimate AAPL
+    finnhub-cli.sh revenue-estimate MSFT --freq annual
 EOF
             exit 0
         fi
@@ -923,13 +923,13 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn revenue-estimate <symbol> [--freq quarterly|annual]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh revenue-estimate <symbol> [--freq quarterly|annual]"
         _api "/stock/revenue-estimate" "symbol=${symbol}" "freq=${freq}"
         ;;
     earnings)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn earnings <symbol> [options]
+Usage: finnhub-cli.sh earnings <symbol> [options]
 
 Get company earnings (actual vs estimate).
 
@@ -940,8 +940,8 @@ Options:
     --limit N    Number of quarterly results to return (default: 4)
 
 Examples:
-    finn earnings AAPL
-    finn earnings MSFT --limit 8
+    finnhub-cli.sh earnings AAPL
+    finnhub-cli.sh earnings MSFT --limit 8
 EOF
             exit 0
         fi
@@ -954,13 +954,13 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn earnings <symbol> [--limit 4]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh earnings <symbol> [--limit 4]"
         _api "/stock/earnings" "symbol=${symbol}" "limit=${limit}"
         ;;
     earnings-calendar)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn earnings-calendar [options]
+Usage: finnhub-cli.sh earnings-calendar [options]
 
 Get upcoming earnings calendar.
 
@@ -970,9 +970,9 @@ Options:
     --symbol SYMBOL  Filter to a specific stock symbol (optional)
 
 Examples:
-    finn earnings-calendar
-    finn earnings-calendar --from 2024-01-01 --to 2024-01-31
-    finn earnings-calendar --symbol AAPL
+    finnhub-cli.sh earnings-calendar
+    finnhub-cli.sh earnings-calendar --from 2024-01-01 --to 2024-01-31
+    finnhub-cli.sh earnings-calendar --symbol AAPL
 EOF
             exit 0
         fi
@@ -995,7 +995,7 @@ EOF
     upgrade-downgrade)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn upgrade-downgrade <symbol> [options]
+Usage: finnhub-cli.sh upgrade-downgrade <symbol> [options]
 
 Get upgrade/downgrade history for a stock.
 
@@ -1007,8 +1007,8 @@ Options:
     --to DATE      End date in YYYY-MM-DD format (default: today)
 
 Examples:
-    finn upgrade-downgrade AAPL
-    finn upgrade-downgrade MSFT --from 2024-01-01 --to 2024-06-01
+    finnhub-cli.sh upgrade-downgrade AAPL
+    finnhub-cli.sh upgrade-downgrade MSFT --from 2024-01-01 --to 2024-06-01
 EOF
             exit 0
         fi
@@ -1022,7 +1022,7 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn upgrade-downgrade <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh upgrade-downgrade <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
         [[ -z "$from" ]] && from=$(_default_from 90)
         [[ -z "$to" ]] && to=$(_default_to)
         _api "/stock/upgrade-downgrade" "symbol=${symbol}" "from=${from}" "to=${to}"
@@ -1030,7 +1030,7 @@ EOF
     ipo-calendar)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn ipo-calendar [options]
+Usage: finnhub-cli.sh ipo-calendar [options]
 
 Get upcoming IPO calendar.
 
@@ -1039,8 +1039,8 @@ Options:
     --to DATE      End date in YYYY-MM-DD format (default: 30 days from now)
 
 Examples:
-    finn ipo-calendar
-    finn ipo-calendar --from 2024-01-01 --to 2024-03-01
+    finnhub-cli.sh ipo-calendar
+    finnhub-cli.sh ipo-calendar --from 2024-01-01 --to 2024-03-01
 EOF
             exit 0
         fi
@@ -1062,7 +1062,7 @@ EOF
     news-sentiment)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn news-sentiment <symbol>
+Usage: finnhub-cli.sh news-sentiment <symbol>
 
 Get news sentiment analysis for a symbol.
 
@@ -1070,20 +1070,20 @@ ARGUMENTS
     <symbol>    Stock ticker symbol (e.g., AAPL)
 
 EXAMPLES
-    finn news-sentiment AAPL
-    finn news-sentiment TSLA
+    finnhub-cli.sh news-sentiment AAPL
+    finnhub-cli.sh news-sentiment TSLA
 EOF
             exit 0
         fi
         symbol=""
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn news-sentiment <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh news-sentiment <symbol>"
         _api "/news-sentiment" "symbol=${symbol}"
         ;;
     social-sentiment)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn social-sentiment <symbol> [options]
+Usage: finnhub-cli.sh social-sentiment <symbol> [options]
 
 Get social media sentiment data for a symbol.
 
@@ -1095,8 +1095,8 @@ OPTIONS
     --to DATE      End date in YYYY-MM-DD format (default: today)
 
 EXAMPLES
-    finn social-sentiment AAPL
-    finn social-sentiment TSLA --from 2024-01-01 --to 2024-06-01
+    finnhub-cli.sh social-sentiment AAPL
+    finnhub-cli.sh social-sentiment TSLA --from 2024-01-01 --to 2024-06-01
 EOF
             exit 0
         fi
@@ -1110,7 +1110,7 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn social-sentiment <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh social-sentiment <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
         [[ -z "$from" ]] && from=$(_default_from 30)
         [[ -z "$to" ]] && to=$(_default_to)
         _api "/stock/social-sentiment" "symbol=${symbol}" "from=${from}" "to=${to}"
@@ -1118,7 +1118,7 @@ EOF
     congressional-trading)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn congressional-trading <symbol> [options]
+Usage: finnhub-cli.sh congressional-trading <symbol> [options]
 
 Get congressional trading activity for a symbol.
 
@@ -1130,8 +1130,8 @@ OPTIONS
     --to DATE      End date in YYYY-MM-DD format (default: today)
 
 EXAMPLES
-    finn congressional-trading AAPL
-    finn congressional-trading TSLA --from 2024-01-01 --to 2024-06-01
+    finnhub-cli.sh congressional-trading AAPL
+    finnhub-cli.sh congressional-trading TSLA --from 2024-01-01 --to 2024-06-01
 EOF
             exit 0
         fi
@@ -1145,7 +1145,7 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn congressional-trading <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh congressional-trading <symbol> [--from YYYY-MM-DD] [--to YYYY-MM-DD]"
         [[ -z "$from" ]] && from=$(_default_from 90)
         [[ -z "$to" ]] && to=$(_default_to)
         _api "/stock/congressional-trading" "symbol=${symbol}" "from=${from}" "to=${to}"
@@ -1153,7 +1153,7 @@ EOF
     supply-chain)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn supply-chain <symbol>
+Usage: finnhub-cli.sh supply-chain <symbol>
 
 Get supply chain relationships for a symbol.
 
@@ -1161,20 +1161,20 @@ ARGUMENTS
     <symbol>    Stock ticker symbol (e.g., AAPL)
 
 EXAMPLES
-    finn supply-chain AAPL
-    finn supply-chain TSLA
+    finnhub-cli.sh supply-chain AAPL
+    finnhub-cli.sh supply-chain TSLA
 EOF
             exit 0
         fi
         symbol=""
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn supply-chain <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh supply-chain <symbol>"
         _api "/stock/supply-chain" "symbol=${symbol}"
         ;;
     sector-metrics)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn sector-metrics [options]
+Usage: finnhub-cli.sh sector-metrics [options]
 
 Get sector-level performance metrics.
 
@@ -1182,8 +1182,8 @@ OPTIONS
     --region REGION    Region code (default: NA)
 
 EXAMPLES
-    finn sector-metrics
-    finn sector-metrics --region EU
+    finnhub-cli.sh sector-metrics
+    finnhub-cli.sh sector-metrics --region EU
 EOF
             exit 0
         fi
@@ -1200,7 +1200,7 @@ EOF
     esg)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn esg <symbol>
+Usage: finnhub-cli.sh esg <symbol>
 
 Get ESG (environmental, social, governance) scores for a symbol.
 
@@ -1208,14 +1208,14 @@ ARGUMENTS
     <symbol>    Stock ticker symbol (e.g., AAPL)
 
 EXAMPLES
-    finn esg AAPL
-    finn esg MSFT
+    finnhub-cli.sh esg AAPL
+    finnhub-cli.sh esg MSFT
 EOF
             exit 0
         fi
         symbol=""
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn esg <symbol>"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh esg <symbol>"
         _api "/stock/esg" "symbol=${symbol}"
         ;;
 
@@ -1223,7 +1223,7 @@ EOF
     indicator)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn indicator <symbol> --indicator <name> [options]
+Usage: finnhub-cli.sh indicator <symbol> --indicator <name> [options]
 
 Run a technical indicator calculation on candle data.
 
@@ -1239,9 +1239,9 @@ OPTIONS
     --timeperiod N     Time period for the indicator (default: 14)
 
 EXAMPLES
-    finn indicator AAPL --indicator sma
-    finn indicator MSFT --indicator rsi --timeperiod 21
-    finn indicator TSLA --indicator macd --from 2024-01-01 --to 2024-06-01
+    finnhub-cli.sh indicator AAPL --indicator sma
+    finnhub-cli.sh indicator MSFT --indicator rsi --timeperiod 21
+    finnhub-cli.sh indicator TSLA --indicator macd --from 2024-01-01 --to 2024-06-01
 EOF
             exit 0
         fi
@@ -1258,8 +1258,8 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn indicator <symbol> --indicator <name> [--resolution D] [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--timeperiod 14]"
-        _require "indicator" "$ind" "usage: finn indicator <symbol> --indicator <name> (e.g. sma, ema, rsi, macd, bbands)"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh indicator <symbol> --indicator <name> [--resolution D] [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--timeperiod 14]"
+        _require "indicator" "$ind" "usage: finnhub-cli.sh indicator <symbol> --indicator <name> (e.g. sma, ema, rsi, macd, bbands)"
         [[ -z "$from" ]] && from=$(_default_from 365)
         [[ -z "$to" ]] && to=$(_default_to)
         from_ts=""; to_ts=""
@@ -1270,7 +1270,7 @@ EOF
     pattern)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn pattern <symbol> [options]
+Usage: finnhub-cli.sh pattern <symbol> [options]
 
 Detect candlestick patterns for a stock symbol.
 
@@ -1281,8 +1281,8 @@ OPTIONS
     --resolution R    Candle resolution: 1, 5, 15, 30, 60, D, W, M (default: D)
 
 EXAMPLES
-    finn pattern AAPL
-    finn pattern MSFT --resolution W
+    finnhub-cli.sh pattern AAPL
+    finnhub-cli.sh pattern MSFT --resolution W
 EOF
             exit 0
         fi
@@ -1295,13 +1295,13 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn pattern <symbol> [--resolution D]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh pattern <symbol> [--resolution D]"
         _api "/scan/pattern" "symbol=${symbol}" "resolution=${resolution}"
         ;;
     support-resistance)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn support-resistance <symbol> [options]
+Usage: finnhub-cli.sh support-resistance <symbol> [options]
 
 Get support and resistance levels for a stock symbol.
 
@@ -1312,8 +1312,8 @@ OPTIONS
     --resolution R    Candle resolution: 1, 5, 15, 30, 60, D, W, M (default: D)
 
 EXAMPLES
-    finn support-resistance AAPL
-    finn support-resistance MSFT --resolution W
+    finnhub-cli.sh support-resistance AAPL
+    finnhub-cli.sh support-resistance MSFT --resolution W
 EOF
             exit 0
         fi
@@ -1326,13 +1326,13 @@ EOF
                 *) ((i+=1)) ;;
             esac
         done
-        _require "symbol" "$symbol" "usage: finn support-resistance <symbol> [--resolution D]"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh support-resistance <symbol> [--resolution D]"
         _api "/scan/support-resistance" "symbol=${symbol}" "resolution=${resolution}"
         ;;
     index-constituents)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn index-constituents <symbol>
+Usage: finnhub-cli.sh index-constituents <symbol>
 
 Get the constituents (member stocks) of a stock index.
 
@@ -1340,19 +1340,19 @@ ARGUMENTS
     <symbol>    Index symbol (e.g. ^GSPC for S&P 500, ^DJI for Dow Jones)
 
 EXAMPLES
-    finn index-constituents ^GSPC
-    finn index-constituents ^DJI
+    finnhub-cli.sh index-constituents ^GSPC
+    finnhub-cli.sh index-constituents ^DJI
 EOF
             exit 0
         fi
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn index-constituents <symbol> (e.g. ^GSPC, ^DJI)"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh index-constituents <symbol> (e.g. ^GSPC, ^DJI)"
         _api "/index/constituents" "symbol=${symbol}"
         ;;
     etf-holdings)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn etf-holdings <symbol>
+Usage: finnhub-cli.sh etf-holdings <symbol>
 
 Get ETF holdings breakdown.
 
@@ -1360,13 +1360,13 @@ ARGUMENTS
     <symbol>    ETF ticker symbol (e.g. SPY, QQQ, IWM)
 
 EXAMPLES
-    finn etf-holdings SPY
-    finn etf-holdings QQQ
+    finnhub-cli.sh etf-holdings SPY
+    finnhub-cli.sh etf-holdings QQQ
 EOF
             exit 0
         fi
         symbol="${COMMAND_ARGS[0]:-""}"
-        _require "symbol" "$symbol" "usage: finn etf-holdings <symbol> (e.g. SPY, QQQ)"
+        _require "symbol" "$symbol" "usage: finnhub-cli.sh etf-holdings <symbol> (e.g. SPY, QQQ)"
         _api "/etf/holdings" "symbol=${symbol}"
         ;;
 
@@ -1374,7 +1374,7 @@ EOF
     economic-calendar)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn economic-calendar [options]
+Usage: finnhub-cli.sh economic-calendar [options]
 
 Get upcoming economic events calendar.
 
@@ -1383,8 +1383,8 @@ Options:
     --to      End date YYYY-MM-DD (default: 7 days from now)
 
 Examples:
-    finn economic-calendar
-    finn economic-calendar --from 2024-01-01 --to 2024-01-31
+    finnhub-cli.sh economic-calendar
+    finnhub-cli.sh economic-calendar --from 2024-01-01 --to 2024-01-31
 EOF
             exit 0
         fi
@@ -1404,12 +1404,12 @@ EOF
     economic-codes)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn economic-codes
+Usage: finnhub-cli.sh economic-codes
 
 List available economic indicator codes.
 
 Examples:
-    finn economic-codes
+    finnhub-cli.sh economic-codes
 EOF
             exit 0
         fi
@@ -1418,7 +1418,7 @@ EOF
     economic)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn economic <code>
+Usage: finnhub-cli.sh economic <code>
 
 Get economic indicator data by code.
 
@@ -1426,23 +1426,23 @@ Arguments:
     <code>    Economic indicator code (e.g. MA-USA-656880)
 
 Examples:
-    finn economic MA-USA-656880
+    finnhub-cli.sh economic MA-USA-656880
 EOF
             exit 0
         fi
         code="${COMMAND_ARGS[0]:-""}"
-        _require "code" "$code" "usage: finn economic <code>"
+        _require "code" "$code" "usage: finnhub-cli.sh economic <code>"
         _api "/economic" "code=${code}"
         ;;
     country)
         if [[ "$SHOW_HELP" -eq 1 ]]; then
             cat <<'EOF'
-Usage: finn country
+Usage: finnhub-cli.sh country
 
 List available country metadata.
 
 Examples:
-    finn country
+    finnhub-cli.sh country
 EOF
             exit 0
         fi
@@ -1451,7 +1451,7 @@ EOF
 
     # --- Unknown command ------------------------------------------------------
     *)
-        printf "finn: unknown command '%s'\n\n" "$COMMAND" >&2
+        printf "finnhub-cli.sh: unknown command '%s'\n\n" "$COMMAND" >&2
         _usage >&2
         exit 1
         ;;

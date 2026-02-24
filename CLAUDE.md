@@ -1,16 +1,16 @@
-# Finnhub CLI Tool (`finn`)
+# Finnhub CLI Tool (`finnhub-cli.sh`)
 
 A lightweight CLI for querying financial market data from the Finnhub API. Used by a financial advisor to build market reports and advise clients on market movements.
 
 ## Quick Start
 
-The CLI is at `/home/ubuntu/tinyclaw-workspace/finn/finn`. API key is pre-configured.
+The CLI is at `/home/ubuntu/tinyclaw-workspace/finn/finnhub-cli.sh`. API key is pre-configured.
 
 ```bash
-finn quote AAPL                    # Real-time price
-finn profile AAPL                  # Company overview
-finn recommendation AAPL          # Analyst consensus
-finn company-news AAPL --from 2025-01-01 --to 2025-01-31
+finnhub-cli.sh quote AAPL                    # Real-time price
+finnhub-cli.sh profile AAPL                  # Company overview
+finnhub-cli.sh recommendation AAPL          # Analyst consensus
+finnhub-cli.sh company-news AAPL --from 2025-01-01 --to 2025-01-31
 ```
 
 ## Output
@@ -23,74 +23,74 @@ All output is JSON to stdout. Errors go to stderr. Pipe output directly or parse
 
 | Command | Usage | Description |
 |---------|-------|-------------|
-| `quote` | `finn quote <symbol>` | Real-time price, change %, high/low, prev close |
-| `candle` | `finn candle <symbol> [--resolution D] [--from DATE] [--to DATE]` | Historical OHLCV price data. Resolution: 1,5,15,30,60,D,W,M. Dates default to last year |
-| `search` | `finn search <query>` | Find ticker symbols by company name |
-| `symbols` | `finn symbols <exchange>` | List all symbols on an exchange (e.g., US, L, T) |
-| `market-status` | `finn market-status <exchange>` | Is the market open or closed? |
-| `market-news` | `finn market-news [--category general]` | Latest market news headlines. Categories: general, forex, crypto, merger |
-| `company-news` | `finn company-news <symbol> [--from DATE] [--to DATE]` | Company-specific news. Defaults to last 30 days |
-| `forex-rates` | `finn forex-rates [--base USD]` | Real-time FX exchange rates |
-| `forex-candle` | `finn forex-candle <symbol> [--resolution D] [--from DATE] [--to DATE]` | Forex OHLCV (e.g., OANDA:EUR_USD) |
-| `crypto-candle` | `finn crypto-candle <symbol> [--resolution D] [--from DATE] [--to DATE]` | Crypto OHLCV (e.g., BINANCE:BTCUSDT) |
+| `quote` | `finnhub-cli.sh quote <symbol>` | Real-time price, change %, high/low, prev close |
+| `candle` | `finnhub-cli.sh candle <symbol> [--resolution D] [--from DATE] [--to DATE]` | Historical OHLCV price data. Resolution: 1,5,15,30,60,D,W,M. Dates default to last year |
+| `search` | `finnhub-cli.sh search <query>` | Find ticker symbols by company name |
+| `symbols` | `finnhub-cli.sh symbols <exchange>` | List all symbols on an exchange (e.g., US, L, T) |
+| `market-status` | `finnhub-cli.sh market-status <exchange>` | Is the market open or closed? |
+| `market-news` | `finnhub-cli.sh market-news [--category general]` | Latest market news headlines. Categories: general, forex, crypto, merger |
+| `company-news` | `finnhub-cli.sh company-news <symbol> [--from DATE] [--to DATE]` | Company-specific news. Defaults to last 30 days |
+| `forex-rates` | `finnhub-cli.sh forex-rates [--base USD]` | Real-time FX exchange rates |
+| `forex-candle` | `finnhub-cli.sh forex-candle <symbol> [--resolution D] [--from DATE] [--to DATE]` | Forex OHLCV (e.g., OANDA:EUR_USD) |
+| `crypto-candle` | `finnhub-cli.sh crypto-candle <symbol> [--resolution D] [--from DATE] [--to DATE]` | Crypto OHLCV (e.g., BINANCE:BTCUSDT) |
 
 ### Company Fundamentals
 
 | Command | Usage | Description |
 |---------|-------|-------------|
-| `profile` | `finn profile <symbol>` | Company overview: name, sector, market cap, IPO date, logo, website |
-| `peers` | `finn peers <symbol>` | List of comparable/peer companies |
-| `metrics` | `finn metrics <symbol> [--metric all]` | Financial ratios: PE, EPS, margins, beta, 52w high/low, dividend yield |
-| `financials` | `finn financials <symbol> [--statement bs\|ic\|cf] [--freq annual\|quarterly]` | Financial statements (balance sheet, income, cash flow) |
-| `financials-reported` | `finn financials-reported <symbol> [--freq annual\|quarterly]` | As-reported SEC filing data |
-| `revenue-breakdown` | `finn revenue-breakdown <symbol>` | Revenue split by segment and geography |
-| `executives` | `finn executives <symbol>` | C-suite and board member details |
-| `insider-transactions` | `finn insider-transactions <symbol> [--from DATE] [--to DATE]` | Insider buying/selling activity. Defaults to last 90 days |
-| `insider-sentiment` | `finn insider-sentiment <symbol> [--from DATE] [--to DATE]` | Net insider sentiment (bullish/bearish). Defaults to last 90 days |
-| `ownership` | `finn ownership <symbol>` | Institutional holders and their positions |
+| `profile` | `finnhub-cli.sh profile <symbol>` | Company overview: name, sector, market cap, IPO date, logo, website |
+| `peers` | `finnhub-cli.sh peers <symbol>` | List of comparable/peer companies |
+| `metrics` | `finnhub-cli.sh metrics <symbol> [--metric all]` | Financial ratios: PE, EPS, margins, beta, 52w high/low, dividend yield |
+| `financials` | `finnhub-cli.sh financials <symbol> [--statement bs\|ic\|cf] [--freq annual\|quarterly]` | Financial statements (balance sheet, income, cash flow) |
+| `financials-reported` | `finnhub-cli.sh financials-reported <symbol> [--freq annual\|quarterly]` | As-reported SEC filing data |
+| `revenue-breakdown` | `finnhub-cli.sh revenue-breakdown <symbol>` | Revenue split by segment and geography |
+| `executives` | `finnhub-cli.sh executives <symbol>` | C-suite and board member details |
+| `insider-transactions` | `finnhub-cli.sh insider-transactions <symbol> [--from DATE] [--to DATE]` | Insider buying/selling activity. Defaults to last 90 days |
+| `insider-sentiment` | `finnhub-cli.sh insider-sentiment <symbol> [--from DATE] [--to DATE]` | Net insider sentiment (bullish/bearish). Defaults to last 90 days |
+| `ownership` | `finnhub-cli.sh ownership <symbol>` | Institutional holders and their positions |
 
 ### Estimates & Analyst Data
 
 | Command | Usage | Description |
 |---------|-------|-------------|
-| `recommendation` | `finn recommendation <symbol>` | Analyst consensus: strongBuy, buy, hold, sell, strongSell counts by month |
-| `price-target` | `finn price-target <symbol>` | Analyst price targets: high, low, mean, median |
-| `eps-estimate` | `finn eps-estimate <symbol> [--freq quarterly]` | Forward EPS estimates |
-| `revenue-estimate` | `finn revenue-estimate <symbol> [--freq quarterly]` | Forward revenue estimates |
-| `earnings` | `finn earnings <symbol> [--limit 4]` | Historical EPS: actual vs estimate, surprise % |
-| `earnings-calendar` | `finn earnings-calendar [--from DATE] [--to DATE] [--symbol SYM]` | Upcoming earnings dates. Defaults to next 7 days |
-| `upgrade-downgrade` | `finn upgrade-downgrade <symbol> [--from DATE] [--to DATE]` | Rating changes from analysts. Defaults to last 90 days |
-| `ipo-calendar` | `finn ipo-calendar [--from DATE] [--to DATE]` | Upcoming IPOs. Defaults to next 30 days |
+| `recommendation` | `finnhub-cli.sh recommendation <symbol>` | Analyst consensus: strongBuy, buy, hold, sell, strongSell counts by month |
+| `price-target` | `finnhub-cli.sh price-target <symbol>` | Analyst price targets: high, low, mean, median |
+| `eps-estimate` | `finnhub-cli.sh eps-estimate <symbol> [--freq quarterly]` | Forward EPS estimates |
+| `revenue-estimate` | `finnhub-cli.sh revenue-estimate <symbol> [--freq quarterly]` | Forward revenue estimates |
+| `earnings` | `finnhub-cli.sh earnings <symbol> [--limit 4]` | Historical EPS: actual vs estimate, surprise % |
+| `earnings-calendar` | `finnhub-cli.sh earnings-calendar [--from DATE] [--to DATE] [--symbol SYM]` | Upcoming earnings dates. Defaults to next 7 days |
+| `upgrade-downgrade` | `finnhub-cli.sh upgrade-downgrade <symbol> [--from DATE] [--to DATE]` | Rating changes from analysts. Defaults to last 90 days |
+| `ipo-calendar` | `finnhub-cli.sh ipo-calendar [--from DATE] [--to DATE]` | Upcoming IPOs. Defaults to next 30 days |
 
 ### Sentiment & Alternative Data
 
 | Command | Usage | Description |
 |---------|-------|-------------|
-| `news-sentiment` | `finn news-sentiment <symbol>` | News sentiment scores and buzz metrics (premium) |
-| `social-sentiment` | `finn social-sentiment <symbol> [--from DATE] [--to DATE]` | Reddit/Twitter sentiment. Defaults to last 30 days (premium) |
-| `congressional-trading` | `finn congressional-trading <symbol> [--from DATE] [--to DATE]` | Politician stock trades. Defaults to last 90 days |
-| `supply-chain` | `finn supply-chain <symbol>` | Key customers and suppliers |
-| `sector-metrics` | `finn sector-metrics [--region NA]` | Sector performance metrics |
-| `esg` | `finn esg <symbol>` | Environmental, Social, Governance scores |
+| `news-sentiment` | `finnhub-cli.sh news-sentiment <symbol>` | News sentiment scores and buzz metrics (premium) |
+| `social-sentiment` | `finnhub-cli.sh social-sentiment <symbol> [--from DATE] [--to DATE]` | Reddit/Twitter sentiment. Defaults to last 30 days (premium) |
+| `congressional-trading` | `finnhub-cli.sh congressional-trading <symbol> [--from DATE] [--to DATE]` | Politician stock trades. Defaults to last 90 days |
+| `supply-chain` | `finnhub-cli.sh supply-chain <symbol>` | Key customers and suppliers |
+| `sector-metrics` | `finnhub-cli.sh sector-metrics [--region NA]` | Sector performance metrics |
+| `esg` | `finnhub-cli.sh esg <symbol>` | Environmental, Social, Governance scores |
 
 ### Technical Analysis & Indices
 
 | Command | Usage | Description |
 |---------|-------|-------------|
-| `indicator` | `finn indicator <symbol> --indicator sma [--resolution D] [--from DATE] [--to DATE] [--timeperiod 14]` | Technical indicators: sma, ema, rsi, macd, bbands, stoch, adx, atr, cci, obv, wma |
-| `pattern` | `finn pattern <symbol> [--resolution D]` | Candlestick pattern recognition |
-| `support-resistance` | `finn support-resistance <symbol> [--resolution D]` | Support and resistance price levels |
-| `index-constituents` | `finn index-constituents <symbol>` | Index members (e.g., ^GSPC for S&P 500, ^DJI for Dow) |
-| `etf-holdings` | `finn etf-holdings <symbol>` | ETF portfolio holdings breakdown (e.g., SPY, QQQ) |
+| `indicator` | `finnhub-cli.sh indicator <symbol> --indicator sma [--resolution D] [--from DATE] [--to DATE] [--timeperiod 14]` | Technical indicators: sma, ema, rsi, macd, bbands, stoch, adx, atr, cci, obv, wma |
+| `pattern` | `finnhub-cli.sh pattern <symbol> [--resolution D]` | Candlestick pattern recognition |
+| `support-resistance` | `finnhub-cli.sh support-resistance <symbol> [--resolution D]` | Support and resistance price levels |
+| `index-constituents` | `finnhub-cli.sh index-constituents <symbol>` | Index members (e.g., ^GSPC for S&P 500, ^DJI for Dow) |
+| `etf-holdings` | `finnhub-cli.sh etf-holdings <symbol>` | ETF portfolio holdings breakdown (e.g., SPY, QQQ) |
 
 ### Economic & Calendar
 
 | Command | Usage | Description |
 |---------|-------|-------------|
-| `economic-calendar` | `finn economic-calendar [--from DATE] [--to DATE]` | Upcoming economic events (CPI, FOMC, jobs). Defaults to next 7 days |
-| `economic-codes` | `finn economic-codes` | List all available economic indicator codes |
-| `economic` | `finn economic <code>` | Historical data for an economic indicator |
-| `country` | `finn country` | Country metadata with risk premiums and ratings |
+| `economic-calendar` | `finnhub-cli.sh economic-calendar [--from DATE] [--to DATE]` | Upcoming economic events (CPI, FOMC, jobs). Defaults to next 7 days |
+| `economic-codes` | `finnhub-cli.sh economic-codes` | List all available economic indicator codes |
+| `economic` | `finnhub-cli.sh economic <code>` | Historical data for an economic indicator |
+| `country` | `finnhub-cli.sh country` | Country metadata with risk premiums and ratings |
 
 ## Date Format
 
@@ -100,57 +100,57 @@ All dates use `YYYY-MM-DD` format. The tool auto-converts to Unix timestamps whe
 
 ### Daily Market Briefing
 ```bash
-finn quote AAPL                    # Current price
-finn quote MSFT
-finn quote GOOGL
-finn market-news                   # Headlines
-finn economic-calendar             # What's coming this week
-finn sector-metrics                # Sector performance
+finnhub-cli.sh quote AAPL                    # Current price
+finnhub-cli.sh quote MSFT
+finnhub-cli.sh quote GOOGL
+finnhub-cli.sh market-news                   # Headlines
+finnhub-cli.sh economic-calendar             # What's coming this week
+finnhub-cli.sh sector-metrics                # Sector performance
 ```
 
 ### Company Deep Dive for Client
 ```bash
-finn profile AAPL                  # Overview
-finn metrics AAPL                  # Key ratios (PE, margins, beta)
-finn recommendation AAPL          # Analyst consensus
-finn price-target AAPL            # Where analysts think it's going
-finn earnings AAPL                 # Recent earnings beats/misses
-finn eps-estimate AAPL            # Forward estimates
-finn revenue-estimate AAPL        # Revenue outlook
-finn insider-transactions AAPL    # Are insiders buying or selling?
-finn company-news AAPL --from 2025-02-01 --to 2025-02-24
+finnhub-cli.sh profile AAPL                  # Overview
+finnhub-cli.sh metrics AAPL                  # Key ratios (PE, margins, beta)
+finnhub-cli.sh recommendation AAPL          # Analyst consensus
+finnhub-cli.sh price-target AAPL            # Where analysts think it's going
+finnhub-cli.sh earnings AAPL                 # Recent earnings beats/misses
+finnhub-cli.sh eps-estimate AAPL            # Forward estimates
+finnhub-cli.sh revenue-estimate AAPL        # Revenue outlook
+finnhub-cli.sh insider-transactions AAPL    # Are insiders buying or selling?
+finnhub-cli.sh company-news AAPL --from 2025-02-01 --to 2025-02-24
 ```
 
 ### Competitor Analysis
 ```bash
-finn peers AAPL                    # Find peers
-finn quote AAPL && finn quote MSFT && finn quote GOOGL  # Compare prices
-finn metrics AAPL && finn metrics MSFT                   # Compare ratios
-finn recommendation AAPL && finn recommendation MSFT     # Compare sentiment
+finnhub-cli.sh peers AAPL                    # Find peers
+finnhub-cli.sh quote AAPL && finnhub-cli.sh quote MSFT && finnhub-cli.sh quote GOOGL  # Compare prices
+finnhub-cli.sh metrics AAPL && finnhub-cli.sh metrics MSFT                   # Compare ratios
+finnhub-cli.sh recommendation AAPL && finnhub-cli.sh recommendation MSFT     # Compare sentiment
 ```
 
 ### Portfolio Review
 ```bash
-finn quote AAPL                    # Check each holding
-finn candle AAPL --from 2025-01-01 --to 2025-02-24      # YTD chart data
-finn indicator AAPL --indicator rsi                       # Is it overbought?
-finn indicator AAPL --indicator sma --timeperiod 50       # 50-day moving avg
-finn support-resistance AAPL                              # Key price levels
+finnhub-cli.sh quote AAPL                    # Check each holding
+finnhub-cli.sh candle AAPL --from 2025-01-01 --to 2025-02-24      # YTD chart data
+finnhub-cli.sh indicator AAPL --indicator rsi                       # Is it overbought?
+finnhub-cli.sh indicator AAPL --indicator sma --timeperiod 50       # 50-day moving avg
+finnhub-cli.sh support-resistance AAPL                              # Key price levels
 ```
 
 ### IPO & Earnings Watch
 ```bash
-finn earnings-calendar             # Who reports this week
-finn ipo-calendar                  # Upcoming IPOs
-finn upgrade-downgrade AAPL        # Recent rating changes
+finnhub-cli.sh earnings-calendar             # Who reports this week
+finnhub-cli.sh ipo-calendar                  # Upcoming IPOs
+finnhub-cli.sh upgrade-downgrade AAPL        # Recent rating changes
 ```
 
 ### Macro Overview
 ```bash
-finn economic-calendar             # CPI, FOMC, jobs data
-finn forex-rates                   # USD strength
-finn sector-metrics                # Which sectors are leading
-finn country                       # Country risk data
+finnhub-cli.sh economic-calendar             # CPI, FOMC, jobs data
+finnhub-cli.sh forex-rates                   # USD strength
+finnhub-cli.sh sector-metrics                # Which sectors are leading
+finnhub-cli.sh country                       # Country risk data
 ```
 
 ## Notes
